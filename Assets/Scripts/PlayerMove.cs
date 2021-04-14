@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
+
 public class PlayerMove : MonoBehaviour
 {
     // The player's maximum movement speed
@@ -13,6 +16,9 @@ public class PlayerMove : MonoBehaviour
     // The player's horizontal acceleration
     public float hAcc;
 
+    // The player's current vertical velocity
+    float vVel;
+
     // The horizontal direction the player is moving (-1 for left, 1 for right, 0 for nowhere)
     float moveDir;
 
@@ -22,15 +28,29 @@ public class PlayerMove : MonoBehaviour
     // The player's maximum jump height
     public float jumpHeight;
 
+    // The player's maximum triple jump height
+
+    public float tripleJumpHeight;
+
     // Stores the player's insantaneous jump velocity
     float jumpVel;
 
     // Stores whether or not the player's feet are touching the floor
     bool onFloor;
 
+    // Stores the number of times the player has jumped leading up to a triple jump
+    float tripleJump;
+
+    // Tracks the time spent on the floor to potentially cancel a triple jump
+    float tripleJumpTimer;
+
+    // How much time can pass before a triple jump is canceled
+    public float maxTripleJumpTimer;
+
     // The player's rigidbody and box collider (feet)
     Rigidbody2D myBody;
     BoxCollider2D myCollider;
+
 
 
 
@@ -41,21 +61,35 @@ public class PlayerMove : MonoBehaviour
         myCollider = gameObject.GetComponent<BoxCollider2D>();
     }
 
+
+
+
     // Called once per frame
     void Update()
     {  
         CheckKeys(); 
     }
 
+
+
+
     // Called at a fixed rate
     void FixedUpdate()
     {
+        vVel = myBody.velocity.y;
+
         HandleMovement();
+        TimeTripleJump();
+        DetectCollisions();
     }
+
+
+
 
     // Checks for keyboard input
     void CheckKeys()
     {
+        // Checks left, right, and jump for movement
         if (Input.GetKey(KeyCode.D))
         {
             moveDir = 1;
@@ -67,13 +101,25 @@ public class PlayerMove : MonoBehaviour
         else
         {
             moveDir = 0;
+            if (tripleJump > 0)
+            {
+                tripleJump = 0;
+            }
         }
-
         if (Input.GetKeyDown(KeyCode.Space))
         {
             jump = true;
         }
+
+        // Cancels the triple jump if the player lets go of a key
+        if ((Input.GetKeyUp(KeyCode.D)) || (Input.GetKeyUp(KeyCode.A)))
+        {
+            tripleJump = 0;
+        }
     }
+
+
+
 
     // Moves the player
     void HandleMovement()
@@ -114,7 +160,21 @@ public class PlayerMove : MonoBehaviour
 
         if (jump == true)
         {
-            jumpVel += jumpHeight;
+            if (onFloor == true)
+            {
+                tripleJump += 1;
+                if (tripleJump >= 3)
+                {
+                    jumpVel += tripleJumpHeight;
+                    tripleJump = 0;
+                }
+                else
+                {
+                    jumpVel += jumpHeight;
+                }
+                onFloor = false;
+                tripleJumpTimer = 0;
+            }
             jump = false;
         }
 
@@ -122,6 +182,10 @@ public class PlayerMove : MonoBehaviour
         myBody.velocity = new Vector3(hVel * speed, jumpVel, 0);
     }
 
+
+
+
+    // Sets onFloor to true if the player collides with the floor
     void OnCollisionEnter2D(Collision2D collisionInfo)
     {
         if(collisionInfo.gameObject.tag == "Floor")
@@ -129,4 +193,32 @@ public class PlayerMove : MonoBehaviour
             onFloor = true;
         }
     }
+
+
+
+
+    // Cancels the triple jump if the player spends too long on the ground
+    void TimeTripleJump()
+    {
+        if ((tripleJump > 0) && (onFloor == true))
+        {
+            tripleJumpTimer += 1;
+            if (tripleJumpTimer >= maxTripleJumpTimer)
+            {
+                tripleJump = 0;
+                tripleJumpTimer = 0;
+            }
+        }
+    }
+
+
+
+
+    // Detects for collision with the floor
+    void DetectCollisions()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, new Vector3(transform.position.x + myBody.velocity.x, transform.position.y + myBody.velocity.y), 1);
+        Debug.DrawRay(transform.position, new Vector3(transform.position.x + myBody.velocity.x, transform.position.y + myBody.velocity.y), Color.black);
+    }
+
 }
