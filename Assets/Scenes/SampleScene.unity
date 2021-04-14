@@ -349,7 +349,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 2
   hAcc: 0.2
-  jumpHeight: 8
+  jumpHeight: 9
+  tripleJumpHeight: 12
+  maxTripleJumpTimer: 6
 --- !u!1 &1169912763
 GameObject:
   m_ObjectHideFlags: 0
