@@ -427,7 +427,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 541668059}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -15.44, y: -2.83, z: 0}
+  m_LocalPosition: {x: -14.32, y: -2.81, z: 0}
   m_LocalScale: {x: 0.43423, y: 0.7738365, z: 0.43423}
   m_Children:
   - {fileID: 752940196}
@@ -467,6 +467,8 @@ MonoBehaviour:
   bigBubble: {fileID: 1316361848}
   sentence: {fileID: 1142751972}
   dots: {fileID: 1923530679}
+  NPCtriangle: {fileID: 0}
+  playerTriangle: {fileID: 0}
   textDisplay: {fileID: 1142751973}
   playerTextDisplay: {fileID: 1041903319}
   typingSpeed: 0.05
@@ -1466,7 +1468,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.66925025, y: -0.23620796}
+  m_Offset: {x: 0.7256508, y: -0.23620796}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -1477,7 +1479,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 4.936773, y: 2.4959717}
+  m_Size: {x: 6.703988, y: 2.4959717}
   m_EdgeRadius: 0
 --- !u!4 &1446956817
 Transform:

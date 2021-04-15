@@ -7,7 +7,7 @@ public class speechBubbleManager : MonoBehaviour
 {
 
     //gameobject stuff to turn bubble + text sprites on and off
-    public GameObject miniBubble, bigBubble, sentence, dots;/*, playerBubble, playerSpeech*/
+    public GameObject miniBubble, bigBubble, sentence, dots, NPCtriangle, playerTriangle;
 
     //dialogue states
     /*bool playerSpoke0 = true;
@@ -17,9 +17,9 @@ public class speechBubbleManager : MonoBehaviour
     bool NPCSpoke2 = false;*/
 
     //visibility checkers
-    bool speechVisible = false;
-    bool touched = false;
-    bool canContinue = false;
+    bool touched = false; //if player is touching npc
+    bool speechVisible = false; //if the bubble and text is now visible, ready to start talking
+    bool canContinue = true; //if text has finished and can continue
 
     //these are all the text + sentence variables
     public TextMeshProUGUI textDisplay, playerTextDisplay;
@@ -64,18 +64,20 @@ public class speechBubbleManager : MonoBehaviour
             speechVisible = true;
         }
 
-        if (Input.GetKeyDown(KeyCode.X) && speechVisible == true){ //if x is pressed again
+        if (Input.GetKeyDown(KeyCode.X) && speechVisible == true && canContinue == true){ //if x is pressed again
             //NextPlayerSentence(); //start typing next sentence
+            Debug.Log("speaking");
             NextSentence();
         }
-        
+
         if(textDisplay.text == sentences[4]){
             //hide the big bubble too
             bigBubble.SetActive(false);
             sentence.SetActive(false);
         }
 
-        if(textDisplay.text == sentences[index]){
+        if(textDisplay.text == sentences[index]){ //once text has finished completely
+            Debug.Log("canContinue is: " + canContinue);
             canContinue = true;
         }
     }
@@ -117,6 +119,10 @@ public class speechBubbleManager : MonoBehaviour
     }
 
     public void NextSentence(){
+
+        Debug.Log("canContinue is: " + canContinue);
+        canContinue = false; //stops the player from going to the next sentence before its done
+
         if(index < sentences.Length - 1){ 
             index++; //get next sentence
             textDisplay.text = ""; //set text back to nothing
